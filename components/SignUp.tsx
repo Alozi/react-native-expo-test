@@ -1,3 +1,5 @@
+import { Formik } from "formik";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -6,10 +8,27 @@ import {
   View,
 } from "react-native";
 import Svg, { Ellipse, Path } from "react-native-svg";
+import * as Yup from "yup";
+
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]{8,64}$/;
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, "Name must be at least 2 characters")
+    .required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .matches(
+      passwordRegex,
+      "Password must be 8–64 characters and include uppercase, lowercase, a number and a special character"
+    ),
+});
 
 export default function SignUp() {
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Svg width="49" height="53" viewBox="0 0 49 53" fill="none">
           <Ellipse
@@ -55,35 +74,73 @@ export default function SignUp() {
         </View>
       </View>
       <View style={styles.divider}></View>
-      <View style={styles.formContainer}>
-        <View style={styles.item}>
-          <Text style={styles.inputLabel}>Name</Text>
-          <TextInput style={styles.input} placeholder="Please, enter name." />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.inputLabel}>E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Please, enter e-mail."
-            keyboardType="email-address"
-          />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.inputLabel}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Please, enter password."
-            keyboardType="visible-password"
-          />
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => alert("button click!")}
+      <Formik
+        initialValues={{ name: "", email: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => console.log(values)}
       >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isValid,
+        }) => (
+          <>
+            <View style={styles.item}>
+              <Text style={styles.inputLabel}>Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Please, enter name."
+                value={values.name}
+                onChangeText={handleChange("name")}
+                onBlur={handleBlur("name")}
+              />
+              {touched.name && errors.name && (
+                <Text style={styles.error}>{errors.name}</Text>
+              )}
+            </View>
+            <View style={styles.item}>
+              <Text style={styles.inputLabel}>E-mail</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Please, enter e-mail."
+                keyboardType="email-address"
+                value={values.email}
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+              />
+              {touched.email && errors.email && (
+                <Text style={styles.error}>{errors.email}</Text>
+              )}
+            </View>
+            <View style={styles.item}>
+              <Text style={styles.inputLabel}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Please, enter password."
+                keyboardType="visible-password"
+                secureTextEntry={true}
+                value={values.password}
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+              />
+              {touched.password && errors.password && (
+                <Text style={styles.error}>{errors.password}</Text>
+              )}
+            </View>
+            <TouchableOpacity
+              style={[styles.button, !isValid && styles.buttonDisabled]}
+              onPress={() => handleSubmit()}
+              disabled={!isValid}
+            >
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </Formik>
     </View>
   );
 }
@@ -117,12 +174,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: "#EBEFF5",
     borderBottomWidth: 1,
-  },
-  formContainer: {
-    marginBlock: 20,
-    marginInline: 16,
+    marginBottom: 20,
   },
   item: {
+    marginInline: 16,
     marginBottom: 24,
   },
   inputLabel: {
@@ -145,9 +200,19 @@ const styles = StyleSheet.create({
     borderColor: "#CED5E0",
     borderWidth: 1,
     borderRadius: 16,
-    paddingBlock: 20,
-    paddingInline: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    textAlignVertical: "center",
     height: 56,
+  },
+  error: {
+    color: "#FF0000",
+    fontFamily: "Inter",
+    fontWeight: 400,
+    fontSize: 12,
+    lineHeight: 16,
+    marginBlock: 4,
+    marginInline: 16,
   },
   button: {
     marginBlock: 32,
@@ -155,6 +220,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FA8A34",
     borderRadius: 16,
     height: 48,
+    position: "fixed",
+    bottom: 20,
+    left: 0,
+    right: 0,
+  },
+  buttonDisabled: {
+    backgroundColor: "#ccc",
+    opacity: 0.7,
   },
   buttonText: {
     textAlign: "center",
