@@ -4,17 +4,16 @@ import { StyleSheet, Text, View } from "react-native";
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text>Hello React Native!</Text>
-      {/* <SignUp /> */}
+      <Text style={styles.title}>Hello React Native!</Text>
 
       <View>
-        <Link href="/" style={styles.buttonSignIn}>
+        <Link href="/modalSignIn" style={styles.buttonSignIn}>
           <Link.Trigger>
             <Text>Sign In</Text>
           </Link.Trigger>
         </Link>
 
-        <Link href="/modal" style={styles.buttonSignUp}>
+        <Link href="/modalSignUp" style={styles.buttonSignUp}>
           <Link.Trigger>
             <Text>Sign up</Text>
           </Link.Trigger>
@@ -26,10 +25,18 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    borderBlockColor: "red",
-    borderWidth: 1,
     flex: 1,
     justifyContent: "space-between",
+  },
+  title: {
+    color: "#06070A",
+    fontFamily: "Inter",
+    fontWeight: 500,
+    fontSize: 15,
+    lineHeight: 24,
+    letterSpacing: 0,
+    marginBlock: 17,
+    marginInline: 16,
   },
   buttonSignIn: {
     marginBlock: 20,

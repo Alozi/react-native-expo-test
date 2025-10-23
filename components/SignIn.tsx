@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
 import {
@@ -26,7 +27,7 @@ const validationSchema = Yup.object().shape({
     ),
 });
 
-export default function SignUp() {
+export default function SignIn() {
   return (
     <View>
       <View style={styles.header}>
@@ -69,13 +70,13 @@ export default function SignUp() {
           />
         </Svg>
         <View>
-          <Text style={styles.title}>Sign up</Text>
+          <Text style={styles.title}>Login</Text>
           <Text style={styles.subtitle}>Personal Account</Text>
         </View>
       </View>
       <View style={styles.divider}></View>
       <Formik
-        initialValues={{ name: "", email: "", password: "" }}
+        initialValues={{ email: "", password: "" }}
         validationSchema={validationSchema}
         onSubmit={(values) => console.log(values)}
       >
@@ -89,19 +90,6 @@ export default function SignUp() {
           isValid,
         }) => (
           <>
-            <View style={styles.item}>
-              <Text style={styles.inputLabel}>Name</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Please, enter name."
-                value={values.name}
-                onChangeText={handleChange("name")}
-                onBlur={handleBlur("name")}
-              />
-              {touched.name && errors.name && (
-                <Text style={styles.error}>{errors.name}</Text>
-              )}
-            </View>
             <View style={styles.item}>
               <Text style={styles.inputLabel}>E-mail</Text>
               <TextInput
@@ -138,6 +126,11 @@ export default function SignUp() {
             >
               <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
+            <Link href="/modalSignUp" style={styles.link}>
+              <Link.Trigger>
+                <Text>Create Account</Text>
+              </Link.Trigger>
+            </Link>
           </>
         )}
       </Formik>
@@ -214,15 +207,11 @@ const styles = StyleSheet.create({
     marginInline: 16,
   },
   button: {
-    marginBlock: 32,
+    marginTop: 12,
     marginInline: 16,
     backgroundColor: "#FA8A34",
     borderRadius: 16,
     height: 48,
-    position: "fixed",
-    bottom: 20,
-    left: 0,
-    right: 0,
   },
   buttonDisabled: {
     backgroundColor: "#ccc",
@@ -233,6 +222,20 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "Inter",
     fontWeight: 500,
+    fontSize: 15,
+    lineHeight: 24,
+    letterSpacing: 0,
+    paddingBlock: 12,
+  },
+  link: {
+    marginTop: 4,
+    marginInline: 16,
+    color: "#FA8A34",
+    borderRadius: 16,
+    height: 48,
+    textAlign: "center",
+    fontFamily: "Inter",
+    fontWeight: 600,
     fontSize: 15,
     lineHeight: 24,
     letterSpacing: 0,
