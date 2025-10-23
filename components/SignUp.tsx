@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
 
 export default function SignUp() {
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.header}>
         <Svg width="49" height="53" viewBox="0 0 49 53" fill="none">
           <Ellipse
