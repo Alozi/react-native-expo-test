@@ -7,6 +7,13 @@ export default function Index() {
     <View style={styles.container}>
       <Text style={styles.title}>Hello React Native!</Text>
 
+      <TouchableOpacity
+        style={styles.buttonSignIn}
+        onPress={() => router.navigate("/profile")}
+      >
+        <Text style={styles.buttonSignInText}>Profile</Text>
+      </TouchableOpacity>
+
       <View>
         <TouchableOpacity
           style={styles.buttonSignIn}
