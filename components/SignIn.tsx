@@ -1,6 +1,8 @@
+import login from "@/api/authApi";
+import LoginData from "@/types/login";
 import { Link } from "expo-router";
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,23 +13,32 @@ import {
 import Svg, { Ellipse, Path } from "react-native-svg";
 import * as Yup from "yup";
 
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]{8,64}$/;
-
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, "Name must be at least 2 characters")
     .required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
-    .required("Password is required")
-    .matches(
-      passwordRegex,
-      "Password must be 8–64 characters and include uppercase, lowercase, a number and a special character"
-    ),
+    .min(2, "Name must be at least 2 characters")
+    .required("Password is required"),
 });
 
 export default function SignIn() {
+  const [error, setError] = useState("");
+
+  const handleLogin = async (values: LoginData) => {
+    try {
+      setError("");
+      const data = await login(values);
+      console.log("✅ Logged in:", data);
+    } catch (error: unknown) {
+      if (error.response?.status === 400) {
+        setError("Incorrect username or password");
+      } else {
+        setError("Something went wrong, please try again later");
+      }
+    }
+  };
+
   return (
     <View>
       <View style={styles.header}>
@@ -76,9 +87,9 @@ export default function SignIn() {
       </View>
       <View style={styles.divider}></View>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ name: "", password: "" }}
         validationSchema={validationSchema}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => handleLogin(values)}
       >
         {({
           handleChange,
@@ -91,17 +102,16 @@ export default function SignIn() {
         }) => (
           <>
             <View style={styles.item}>
-              <Text style={styles.inputLabel}>E-mail</Text>
+              <Text style={styles.inputLabel}>Name</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Please, enter e-mail."
-                keyboardType="email-address"
-                value={values.email}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
+                placeholder="Please, enter name."
+                value={values.name}
+                onChangeText={handleChange("name")}
+                onBlur={handleBlur("name")}
               />
-              {touched.email && errors.email && (
-                <Text style={styles.error}>{errors.email}</Text>
+              {touched.name && errors.name && (
+                <Text style={styles.error}>{errors.name}</Text>
               )}
             </View>
             <View style={styles.item}>
@@ -119,6 +129,7 @@ export default function SignIn() {
                 <Text style={styles.error}>{errors.password}</Text>
               )}
             </View>
+            {error && <Text style={styles.errorMessage}>{error}</Text>}
             <TouchableOpacity
               style={[styles.button, !isValid && styles.buttonDisabled]}
               onPress={() => handleSubmit()}
@@ -198,6 +209,16 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   error: {
+    color: "#FF0000",
+    fontFamily: "Inter",
+    fontWeight: 400,
+    fontSize: 12,
+    lineHeight: 16,
+    marginBlock: 4,
+    marginInline: 16,
+  },
+  errorMessage: {
+    textAlign: "center",
     color: "#FF0000",
     fontFamily: "Inter",
     fontWeight: 400,
