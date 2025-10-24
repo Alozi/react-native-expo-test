@@ -3,15 +3,11 @@ import LoginData from "@/types/login";
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import Svg, { Ellipse, Path } from "react-native-svg";
 import * as Yup from "yup";
+import ErrorMessage from "./form/ErrorMessage";
+import SignButton from "./form/SignButton";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -111,7 +107,7 @@ export default function SignIn() {
                 onBlur={handleBlur("name")}
               />
               {touched.name && errors.name && (
-                <Text style={styles.error}>{errors.name}</Text>
+                <ErrorMessage>{errors.name}</ErrorMessage>
               )}
             </View>
             <View style={styles.item}>
@@ -126,17 +122,15 @@ export default function SignIn() {
                 onBlur={handleBlur("password")}
               />
               {touched.password && errors.password && (
-                <Text style={styles.error}>{errors.password}</Text>
+                <ErrorMessage>{errors.password}</ErrorMessage>
               )}
             </View>
-            {error && <Text style={styles.errorMessage}>{error}</Text>}
-            <TouchableOpacity
-              style={[styles.button, !isValid && styles.buttonDisabled]}
-              onPress={() => handleSubmit()}
-              disabled={!isValid}
-            >
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
+            {error && <ErrorMessage isAligncenter={true}>{error}</ErrorMessage>}
+            <SignButton
+              title="Continue"
+              isValid={isValid}
+              handleSubmit={handleSubmit}
+            />
             <Link href="/modalSignUp" style={styles.link}>
               <Link.Trigger>
                 <Text>Create Account</Text>
@@ -207,46 +201,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 16,
     textAlignVertical: "center",
-  },
-  error: {
-    color: "#FF0000",
-    fontFamily: "Inter",
-    fontWeight: 400,
-    fontSize: 12,
-    lineHeight: 16,
-    marginBlock: 4,
-    marginInline: 16,
-  },
-  errorMessage: {
-    textAlign: "center",
-    color: "#FF0000",
-    fontFamily: "Inter",
-    fontWeight: 400,
-    fontSize: 12,
-    lineHeight: 16,
-    marginBlock: 4,
-    marginInline: 16,
-  },
-  button: {
-    marginTop: 12,
-    marginInline: 16,
-    backgroundColor: "#FA8A34",
-    borderRadius: 16,
-    height: 48,
-  },
-  buttonDisabled: {
-    backgroundColor: "#ccc",
-    opacity: 0.7,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "#FFFFFF",
-    fontFamily: "Inter",
-    fontWeight: 500,
-    fontSize: 15,
-    lineHeight: 24,
-    letterSpacing: 0,
-    paddingBlock: 12,
   },
   link: {
     marginTop: 4,
