@@ -1,9 +1,13 @@
 import login from "@/api/authApi";
+import { createPin, enterPin } from "@/api/pin";
 import LoginData from "@/types/login";
+import * as LocalAuthentication from "expo-local-authentication";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -24,15 +28,51 @@ const validationSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
+// Biometric Auth
+const handleBiometricAuth = async () => {
+  try {
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Please, use Face ID / Touch ID",
+    });
+    if (result.success) {
+      Alert.alert("Biometric authentication successful ✅");
+    } else {
+      Alert.alert("Biometric authentication unsuccessful ❌");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const existingPin = await SecureStore.getItemAsync("user_pin");
+
+      console.log(existingPin);
+
+      if (existingPin) {
+        enterPin(existingPin);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   const handleLogin = async (values: LoginData) => {
+    console.log("login");
+
     try {
       setError("");
       const data = await login(values);
       console.log("✅ Logged in:", data);
+
+      createPin();
+
+      // handleBiometricAuth();
     } catch (error: unknown) {
       if (error.response?.status === 400) {
         setError("Incorrect username or password");
