@@ -1,5 +1,5 @@
 import SignIn from "@/components/SignIn";
 
-export default function ModalScreen() {
+export default function SignInPage() {
   return <SignIn />;
 }

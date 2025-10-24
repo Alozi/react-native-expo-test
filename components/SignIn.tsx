@@ -1,9 +1,15 @@
 import login from "@/api/authApi";
 import LoginData from "@/types/login";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Svg, { Ellipse, Path } from "react-native-svg";
 import * as Yup from "yup";
 import ErrorMessage from "./form/ErrorMessage";
@@ -19,6 +25,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function SignIn() {
+  const router = useRouter();
   const [error, setError] = useState("");
 
   const handleLogin = async (values: LoginData) => {
@@ -131,11 +138,12 @@ export default function SignIn() {
               isValid={isValid}
               handleSubmit={handleSubmit}
             />
-            <Link href="/modalSignUp" style={styles.link}>
-              <Link.Trigger>
-                <Text>Create Account</Text>
-              </Link.Trigger>
-            </Link>
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() => router.navigate("/SignUpPage")}
+            >
+              <Text style={styles.linkText}>Create Account</Text>
+            </TouchableOpacity>
           </>
         )}
       </Formik>
@@ -205,15 +213,17 @@ const styles = StyleSheet.create({
   link: {
     marginTop: 4,
     marginInline: 16,
-    color: "#FA8A34",
     borderRadius: 16,
     height: 48,
+    paddingBlock: 12,
+  },
+  linkText: {
+    color: "#FA8A34",
     textAlign: "center",
     fontFamily: "Inter",
     fontWeight: 600,
     fontSize: 15,
     lineHeight: 24,
     letterSpacing: 0,
-    paddingBlock: 12,
   },
 });

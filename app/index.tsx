@@ -1,23 +1,25 @@
-import { Link } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hello React Native!</Text>
 
       <View>
-        <Link href="/modalSignIn" style={styles.buttonSignIn}>
-          <Link.Trigger>
-            <Text>Sign In</Text>
-          </Link.Trigger>
-        </Link>
-
-        <Link href="/modalSignUp" style={styles.buttonSignUp}>
-          <Link.Trigger>
-            <Text>Sign up</Text>
-          </Link.Trigger>
-        </Link>
+        <TouchableOpacity
+          style={styles.buttonSignIn}
+          onPress={() => router.navigate("/SignInPage")}
+        >
+          <Text style={styles.buttonSignInText}>Sign In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonSignUp}
+          onPress={() => router.navigate("/SignUpPage")}
+        >
+          <Text style={styles.buttonSignUpText}>Sign up</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -41,16 +43,18 @@ const styles = StyleSheet.create({
   buttonSignIn: {
     marginBlock: 20,
     marginInline: 16,
-    color: "#FA8A34",
     borderRadius: 16,
     height: 48,
+    paddingBlock: 12,
+  },
+  buttonSignInText: {
+    color: "#FA8A34",
     textAlign: "center",
     fontFamily: "Inter",
     fontWeight: 600,
     fontSize: 15,
     lineHeight: 24,
     letterSpacing: 0,
-    paddingBlock: 12,
   },
   buttonSignUp: {
     marginBottom: 40,
@@ -58,13 +62,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FA8A34",
     borderRadius: 16,
     height: 48,
-    textAlign: "center",
+
+    paddingBlock: 12,
+  },
+  buttonSignUpText: {
     color: "#FFFFFF",
+    textAlign: "center",
     fontFamily: "Inter",
     fontWeight: 600,
     fontSize: 15,
     lineHeight: 24,
     letterSpacing: 0,
-    paddingBlock: 12,
   },
 });
